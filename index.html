@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>تحدي اللوغاريتمات</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg1:#2b1b7a;--bg2:#7a2fc0;--card:rgba(255,255,255,.14);--tx:#fff;--ac:#ffd23f;--good:#1fbf9f;--bad:#ef476f;--ob:#fff;--ot:#1d1650;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg1:#ece6ff;--bg2:#ffdcee;--card:rgba(255,255,255,.75);--tx:#1d1650;--ac:#c2410c;--ob:#fff;--ot:#1d1650}}
+:root[data-theme="light"]{--bg1:#ece6ff;--bg2:#ffdcee;--card:rgba(255,255,255,.75);--tx:#1d1650;--ac:#c2410c}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:'Tajawal',Tahoma,sans-serif;color:var(--tx);background:linear-gradient(160deg,var(--bg1),var(--bg2)) fixed;overflow-x:hidden}
+.scr{display:none;flex-direction:column;align-items:center;gap:18px;padding:20px 16px 32px;max-width:640px;margin:0 auto;min-height:100vh;justify-content:center;text-align:center}
+.scr.on{display:flex}
+h1{font-size:44px;margin:0;font-weight:900;line-height:1.2}
+.big{font-size:84px;animation:bounce 1.2s infinite}
+p{margin:0;font-size:20px}
+button{font-family:inherit;cursor:pointer;border:0}
+.go{background:var(--ac);color:#1d1650;font-size:28px;font-weight:900;padding:16px 44px;border-radius:50px;box-shadow:0 8px 0 rgba(0,0,0,.25);animation:pulse 1.4s infinite}
+.go:active{transform:translateY(4px);box-shadow:0 4px 0 rgba(0,0,0,.25)}
+.hud{width:100%;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:20px}
+.hud span{background:var(--card);padding:6px 14px;border-radius:20px}
+.bar{width:100%;height:12px;background:var(--card);border-radius:8px;overflow:hidden}
+.bar i{display:block;height:100%;width:100%;background:var(--good);transition:width .1s linear,background .3s}
+.card{width:100%;background:var(--card);border-radius:24px;padding:22px 16px;animation:pop .4s}
+.card h2{margin:0 0 10px;font-size:22px}
+.math{font-size:40px;font-weight:900;direction:ltr;unicode-bidi:isolate}
+.opts{width:100%;display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:520px){.opts{grid-template-columns:1fr 1fr}}
+.opt{background:var(--ob);color:var(--ot);border-radius:18px;padding:14px 16px;font-size:26px;font-weight:700;display:flex;align-items:center;gap:12px;box-shadow:0 5px 0 rgba(0,0,0,.2);transition:transform .15s}
+.opt:active{transform:scale(.96)}
+.opt b{background:var(--ac);color:#1d1650;border-radius:50%;width:38px;height:38px;display:grid;place-items:center;font-size:20px;flex:none}
+.opt span{direction:ltr;unicode-bidi:isolate;flex:1;text-align:center}
+.opt.good{background:var(--good);color:#fff;animation:pulse .5s}
+.opt.bad{background:var(--bad);color:#fff;animation:shake .4s}
+.opt[disabled]{pointer-events:none}
+.fb{width:100%;background:var(--card);border-radius:18px;padding:14px;font-size:20px;display:none;animation:pop .3s}
+.fb.on{display:block}
+.fb strong{display:block;font-size:30px;margin-bottom:4px}
+.mute{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);left:10px;background:var(--card);color:var(--tx);border-radius:50%;width:44px;height:44px;font-size:22px;z-index:5}
+.cf{position:fixed;top:-20px;width:10px;height:14px;z-index:9;pointer-events:none;animation:fall 1.9s ease-in forwards}
+.stars{font-size:52px;letter-spacing:6px}
+.sc{font-size:56px;font-weight:900;color:var(--ac)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:100%}
+.tile{aspect-ratio:1;border-radius:20px;background:var(--ac);color:#1d1650;font-size:40px;font-weight:900;box-shadow:0 6px 0 rgba(0,0,0,.25);animation:pop .4s backwards}
+.tile:active{transform:scale(.92)}
+.tile.r{background:var(--good);color:#fff}
+.tile.w{background:var(--bad);color:#fff}
+.tile:disabled{pointer-events:none}
+.hero{position:fixed;inset:0;display:grid;place-items:center;z-index:8;pointer-events:none}
+.hero div{font-size:130px;text-align:center;line-height:1.1;animation:hero 1.7s ease-out forwards}
+.hero small{display:block;font-size:36px;font-weight:900;color:var(--ac);text-shadow:0 3px 0 rgba(0,0,0,.35)}
+.em{width:auto;height:auto;font-size:30px}
+@keyframes hero{0%{transform:scale(0) rotate(-40deg);opacity:0}20%{transform:scale(1.4) rotate(12deg);opacity:1}35%{transform:scale(1) rotate(-10deg)}50%{transform:scale(1.15) rotate(10deg)}65%{transform:scale(1) rotate(-6deg)}85%{opacity:1}100%{transform:scale(1) translateY(-70px);opacity:0}}
+@keyframes bounce{50%{transform:translateY(-14px)}}
+@keyframes pulse{50%{transform:scale(1.06)}}
+@keyframes pop{from{transform:scale(.85);opacity:0}}
+@keyframes shake{25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+@keyframes fall{to{transform:translate(var(--dx),110vh) rotate(720deg)}}
+</style>
+</head>
+<body>
+<button class="mute" id="mute" aria-label="الصوت">🔊</button>
+
+<div class="scr on" id="s0">
+<div class="big">🎮</div>
+<h1>تحدي اللوغاريتمات</h1>
+<p>اختاري رقماً من اللوحة، والسؤال الذي يظهر لك هو الذي تحلّينه 🎯<br>محاولات غير محدودة حتى تنتهي كل الأسئلة!</p>
+<button class="go" id="start">ابدأ اللعب</button>
+</div>
+
+<div class="scr" id="s1">
+<div class="hud"><span id="h-q"></span><span id="h-s"></span></div>
+<div class="card"><h2 id="qt"></h2><div class="math" id="qm"></div></div>
+<div class="opts" id="opts"></div>
+<div class="fb" id="fb"><strong id="fbt"></strong><span id="fbw"></span><br><br><button class="go" id="next" style="font-size:22px;padding:10px 32px;animation:none">التالي ◀</button></div>
+</div>
+
+<div class="scr" id="s3">
+<div class="hud"><span id="b-p"></span><span id="b-s"></span></div>
+<h1 style="font-size:34px">اختاري رقماً 🎯</h1>
+<div class="grid" id="grid"></div>
+</div>
+
+<div class="scr" id="s2">
+<div class="big" id="e-em">🏆</div>
+<h1 id="e-t"></h1>
+<div class="stars" id="e-st"></div>
+<div class="sc" id="e-sc"></div>
+<p id="e-m"></p>
+<button class="go" id="again">العب مرة ثانية</button>
+</div>
+
+<script>
+const Q=[
+["ما قيمة اللوغاريتم؟","log₇ 1",["7","1","0","غير معرّف"],2,"log_b 1 = 0 لأن 7⁰ = 1."],
+["ما قيمة اللوغاريتم؟","log₂ (1/32)",["5","−5","⅕","−⅕"],1,"1/32 = 2⁻⁵ إذن log₂ (1/32) = −5."],
+["ما قيمة اللوغاريتم؟","log₉ 9",["0","9","1","غير معرّف"],2,"log_b b = 1 لأن 9¹ = 9."],
+["حلّ المعادلة الأسية، x = ؟","2ˣ = 8³",["3","6","9","24"],2,"8³ = (2³)³ = 2⁹ إذن x = 9."],
+["الصورة اللوغاريتمية المكافئة لـ","5³ = 125",["log₅ 125 = 3","3log₅ = 125","log₅ 3 = 125","log₂ 125 = 5"],0,"الأساس 5 والأس 3 والعدد 125."],
+["الصورة الأسية للصورة اللوغاريتمية","logₓ y = k",["xᵏ = y","yˣ = k","kˣ = y","kʸ = x"],0,"الأساس x مرفوع للأس k يساوي y."],
+["الصورة الأسية للمتباينة","log₂ x ≥ 3",["x ≥ 3²","x ≤ 3²","x ≥ 2³","x ≤ 2³"],2,"الأساس 2 أكبر من 1 فلا يتغير اتجاه المتباينة."],
+["إذا كان logₓ 32 = 5 فإن x تساوي","logₓ 32 = 5",["1","2","5","32"],1,"x⁵ = 32 وبما أن 2⁵ = 32 فإن x = 2."],
+["إذا كان logₓ 81 = 2 فإن x تساوي","logₓ 81 = 2",["9","81","27","2"],0,"x² = 81 فيكون x = ±9، والأساس موجب فقط، إذن x = 9."],
+["يُكتب log₉ 22 بدلالة اللوغاريتم العشري","log₉ 22",["log (22/9)","log 198","log 22 ÷ log 9","log 9 ÷ log 22"],2,"قاعدة تغيير الأساس."],
+["الصورة المختصرة للمقدار","log 9 − log 27 + log 81",["log 27","1 + log 27","1 − log 27","− log 27"],0,"log (9 ÷ 27 × 81) = log 27."],
+["مدى الدالة","f(x) = log₃ x",["ℝ","[3, ∞)","ℝ⁺","W"],0,"مدى الدالة اللوغاريتمية هو جميع الأعداد الحقيقية ℝ."],
+["الدالة العكسية f(x)⁻¹ للدالة","f(x) = log₄ (x + 1)",["4ˣ − 1","4ˣ + 1","x⁴ − 1","x⁴ + 1"],0,"x = log₄ (y + 1) ثم y + 1 = 4ˣ، إذن y = 4ˣ − 1."],
+["منحنى الدالة يقطع محور x في النقطة","f(x) = log_b x",["(0, 0)","(0, 1)","(1, 1)","(1, 0)"],3,"log_b x = 0 عندما x = 1، فالنقطة (1, 0)."]
+];
+const $=s=>document.querySelector(s),AR="٠١٢٣٤٥٦٧٨٩",ar=n=>String(n).replace(/\d/g,d=>AR[d]),L=["أ","ب","ج","د"];
+let ac,mute=false,order,res,score,cur,lock,N=Q.length;
+function tone(f,t=0,d=.15,ty='sine',v=.2){if(mute||!ac)return;const o=ac.createOscillator(),g=ac.createGain(),s=ac.currentTime+t;o.type=ty;o.frequency.value=f;g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.connect(g);g.connect(ac.destination);o.start(s);o.stop(s+d)}
+const sGood=()=>[523,659,784,1047].forEach((f,k)=>tone(f,k*.08,.18,'triangle'));
+const sBad=()=>{tone(220,0,.25,'sawtooth',.14);tone(140,.15,.35,'sawtooth',.14)};
+const sTick=()=>tone(880,0,.06,'square',.07);
+const sWin=()=>[523,659,784,1047,784,1047,1319].forEach((f,k)=>tone(f,k*.12,.25,'triangle'));
+function confetti(n=45){for(let k=0;k<n;k++){const d=document.createElement('i');d.className='cf';d.style.cssText=`left:${Math.random()*100}vw;background:hsl(${Math.random()*360},90%,60%);--dx:${(Math.random()-.5)*220}px;animation-delay:${Math.random()*.3}s`;document.body.appendChild(d);setTimeout(()=>d.remove(),2400)}}
+function show(id){document.querySelectorAll('.scr').forEach(e=>e.classList.toggle('on',e.id===id));scrollTo(0,0)}
+function begin(){ac=ac||new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();order=Q.map((_,k)=>k).sort(()=>Math.random()-.5);res=Array(N).fill(0);score=0;board()}
+function board(){
+ show('s3');const g=$('#grid');g.innerHTML='';
+ order.forEach((qi,k)=>{const b=document.createElement('button');b.className='tile'+(res[k]===1?' r':res[k]===2?' w':'');b.textContent=res[k]===1?'✓':res[k]===2?'✗':ar(k+1);b.disabled=!!res[k];b.style.animationDelay=k*.04+'s';b.onclick=()=>{sTick();openQ(k)};g.appendChild(b)});
+ $('#b-p').textContent=ar(res.filter(Boolean).length)+' / '+ar(N);$('#b-s').textContent='⭐ '+ar(score);
+}
+function openQ(k){
+ cur=k;lock=false;const q=Q[order[k]];show('s1');
+ $('#qt').textContent=q[0];$('#qm').textContent=q[1];$('#fb').classList.remove('on');
+ $('#h-q').textContent='السؤال '+ar(k+1);$('#h-s').textContent='⭐ '+ar(score);
+ const o=q[2].map((t,j)=>({t,ok:j===q[3]}));for(let j=3;j>0;j--){const r=Math.floor(Math.random()*(j+1));[o[j],o[r]]=[o[r],o[j]]}
+ const box=$('#opts');box.innerHTML='';
+ o.forEach((x,j)=>{const b=document.createElement('button');b.className='opt';b.innerHTML=`<b>${L[j]}</b><span></span>`;b.lastChild.textContent=x.t;b.dataset.ok=x.ok?1:0;b.onclick=()=>pick(b);box.appendChild(b)});
+}
+function pick(b){
+ if(lock)return;lock=true;const ok=b.dataset.ok==='1';
+ document.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(x.dataset.ok==='1')x.classList.add('good')});
+ if(ok){score+=100;res[cur]=1;sGood();confetti();cheer(1);$('#fbt').textContent='🎉 إجابة صحيحة! +١٠٠'}
+ else{b.classList.add('bad');res[cur]=2;sBad();cheer(0);$('#fbt').textContent='😅 إجابة خاطئة، الصحيحة باللون الأخضر'}
+ $('#fbw').textContent=Q[order[cur]][4];$('#fb').classList.add('on');$('#h-s').textContent='⭐ '+ar(score);
+ $('#next').textContent=res.every(Boolean)?'النتيجة 🏆':'الرجوع للوحة ◀';
+ setTimeout(()=>$('#fb').scrollIntoView({behavior:'smooth',block:'end'}),150);
+}
+function sBoing(){if(mute||!ac)return;const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime;o.frequency.setValueAtTime(200,t);o.frequency.exponentialRampToValueAtTime(700,t+.15);o.frequency.exponentialRampToValueAtTime(300,t+.35);g.gain.setValueAtTime(.25,t);g.gain.exponentialRampToValueAtTime(.001,t+.4);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+.4)}
+function cheer(good){
+ const H=good?[['🥳','برافو عليك!'],['🤩','يا سلام عليك!'],['🦄','عبقرية!'],['🕺','ارقصي فرحاً!'],['😎','ولا غلطة!'],['🚀','انطلقتِ للقمة!'],['🤯','مخّك يجنن!'],['🐸','يا بطلة!']]:[['😅','حظ أوفر!']];
+ const [h,m]=H[Math.floor(Math.random()*H.length)],d=document.createElement('div'),x=document.createElement('div'),sm=document.createElement('small');
+ d.className='hero';sm.textContent=m;x.append(h,sm);d.appendChild(x);document.body.appendChild(d);setTimeout(()=>d.remove(),1800);
+ if(good){sBoing();for(let k=0;k<18;k++){const e=document.createElement('i');e.className='cf em';e.textContent=['🎉','⭐','😂','🍬','🎈'][k%5];e.style.cssText=`left:${Math.random()*100}vw;--dx:${(Math.random()-.5)*160}px;animation-delay:${Math.random()*.5}s`;document.body.appendChild(e);setTimeout(()=>e.remove(),2600)}}
+}
+function end(){
+ show('s2');const right=res.filter(x=>x===1).length,r=right/N,st=r>=.85?3:r>=.6?2:r>=.3?1:0;
+ $('#e-em').textContent=st>=2?'🏆':'👏';
+ $('#e-t').textContent=st===3?'أسطورة اللوغاريتمات!':'انتهت اللعبة';
+ $('#e-st').textContent='⭐'.repeat(st)+'☆'.repeat(3-st);
+ $('#e-sc').textContent=ar(score)+' نقطة';
+ $('#e-m').textContent='أجبتم صح على '+ar(right)+' من '+ar(N)+' أسئلة';
+ if(st>=2){sWin();confetti(90)}
+}
+$('#start').onclick=begin;$('#again').onclick=begin;
+$('#next').onclick=()=>{res.every(Boolean)?end():board()};
+$('#mute').onclick=e=>{mute=!mute;e.currentTarget.textContent=mute?'🔇':'🔊'};
+</script>
+</body>
+</html>
